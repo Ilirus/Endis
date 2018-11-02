@@ -1,11 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-import { RoomsSettings, Greetings } from './screens';
+import { RoomsSettingsScreen, GreetingsScreen } from './screens';
 
 const Routes = createStackNavigator(
   {
-    RoomsSettings: RoomsSettings,
-    Greetings: Greetings
+    RoomsSettings: RoomsSettingsScreen,
+    Greetings: GreetingsScreen
   },
   {
     initialRouteName: 'Greetings',

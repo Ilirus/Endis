@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { observer, inject } from 'mobx-react/native';
+import { Room } from '../models';
 
-type Props = {}
-export default class RoomsSettings extends Component<Props> {
+type Props = {
+  roomStore?: Room
+}
+
+@inject('roomStore')
+@observer
+export default class RoomsSettingsScreen extends Component<Props> {
 	render() {
+    console.log(this.props.roomStore)
 		return (
 			<View style={styles.container}>
 				<Text style={styles.welcome}>Welcome!!!!!!</Text>

@@ -6,7 +6,7 @@ type Props = {
     
 } & NavigationInjectedProps
 
-export default class Greetings extends Component<Props> {
+export default class GreetingsScreen extends Component<Props> {
   render() {
     return (
       <View>
