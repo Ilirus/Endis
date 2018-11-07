@@ -2,11 +2,12 @@ import { observable } from 'mobx';
 import { Room } from '../models';
 
  
-class RoomStore {
+export default class RoomStore {
   @observable rooms: Room[] = [];
 
   saveNote(room: Room) {
     const idx = this.rooms.findIndex(({id}) => room.id === id);
+    console.log(room)
     if (idx < 0) {
       this.rooms.push(room);
     } else {
@@ -31,24 +32,27 @@ class RoomStore {
       return this.rooms[idx];
     }
   }
-}
- 
-const observableRoomStore = new RoomStore();
-const newNote = (title: string, content: number) => {
-  const note = {
-    id: `$fake` + new Date(),
-    name: title,
-    costs: content * 5,
-    consumption: content * 30,
-    customTemperature: content + 2,
-    temperature: content,
-  };
-  observableRoomStore.saveNote(note);
-}
- 
-newNote('Кухня', 18);
-newNote('Спальня', 20);
-newNote('Зал', 17);
 
-export default observableRoomStore;
+  
+
+}
+ 
+// const observableRoomStore = new RoomStore();
+// const newNote = (title: string, content: number) => {
+//   const note = {
+//     id: `$fake` + new Date(),
+//     name: title,
+//     costs: content * 5,
+//     consumption: content * 30,
+//     customTemperature: content + 2,
+//     temperature: content,
+//   };
+//   observableRoomStore.saveNote(note);
+// }
+ 
+// newNote('Кухня', 18);
+// newNote('Спальня', 20);
+// newNote('Зал', 17);
+
+// export default observableRoomStore;
  
