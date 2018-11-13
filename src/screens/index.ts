@@ -1,2 +1,2 @@
-export {default as GreetingsScreen} from "./GreetingsScreen";
-export {default as RoomsSettingsScreen} from "./RoomsSettingsScreen";
+export {default as GreetingsScreen} from "./Greetings";
+export {default as RoomsSettingsScreen} from "./RoomsSettings";

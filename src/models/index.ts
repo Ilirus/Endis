@@ -1,1 +1,1 @@
-export * from "./RoomModels";
+export * from "./Room";

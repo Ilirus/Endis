@@ -1,12 +1,7 @@
-import {default as RoomStore} from "./RoomStore";
-import * as Mobx from "mobx";
+import {default as RoomStore} from "./Room";
 
 const stores = {
   roomStore: new RoomStore()
 }
-const W: any = window
-
-W['store'] = stores
-W['mobx'] = Mobx
 
 export default stores;
