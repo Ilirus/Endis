@@ -1,18 +1,27 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Switch } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Room } from '../models';
 import stores from '../stores';
-import { s } from 'react-native-better-styles';
-import { HeaderComponent } from '../components';
+import { s, sizes } from 'react-native-better-styles';
+import Carousel from 'react-native-snap-carousel';
+import ToggleSwitch from 'toggle-switch-react-native';
 
+const { width, height } = Dimensions.get('window');
 
 type Props = {
   roomStore: typeof stores.roomStore
 }
+
+type State = {
+  room: any
+  atHome: boolean
+}
 @inject('roomStore')
 @observer
-export default class RoomsSettingsScreen extends Component<Props> {
+export default class RoomsSettingsScreen extends Component<Props, State> {
+
+  room: any
 
   constructor(props: Props) {
     super(props)
@@ -26,6 +35,10 @@ export default class RoomsSettingsScreen extends Component<Props> {
           temperature: content,
         };
         props.roomStore.saveNote(note);
+        this.state = {
+          room: null,
+          atHome: false
+        }
     }
     
     newNote('Кухня', 40);
@@ -33,13 +46,47 @@ export default class RoomsSettingsScreen extends Component<Props> {
     newNote('Зал', 17);
   }
 
+  renderRoom({item, index}: {item: Room, index: number}) {
+    return (
+      <View>
+        <Text style={[s.fs2, s.white, s.tc]}>{item.name}</Text>
+      </View>
+    );
+  }
+
 	render() {
     const {roomStore} = this.props;
+    const {atHome} = this.state;
 		return (
-			<View style={[s.flx_i, s.aic, s.jcc, s.bg_primary_back]}>
-				<Text style={styles.welcome}>Welcome{roomStore.rooms.length}</Text>
-				<Text style={styles.instructions}>To get started, edit App.js</Text>
-			</View>
+			<ScrollView style={[s.flx_i, s.bg_primary_back]}>
+        <Carousel
+          data={roomStore.rooms}
+          renderItem={this.renderRoom}
+          sliderWidth={width}
+          itemWidth={125}
+          containerCustomStyle={[s.pv1, s.bbw3, s.b_primary_light]}
+          onSnapToItem={index => console.log(index)}
+        />
+        <ToggleSwitch
+          isOn={atHome}
+          onColor='green'
+          offColor='red'
+          label='Example label'
+          labelStyle={{color: 'black', fontWeight: '900'}}
+          size='large'
+          onToggle={isOn => this.setState({atHome: isOn})}
+        />
+        <Switch
+          value={atHome}
+          onValueChange={atHome => this.setState({atHome})}
+        >
+          
+        </Switch>
+        <View style={[s.pv1, s.aic, s.jcc]}>
+          <Text style={styles.welcome}>Welcome{roomStore.rooms.length}</Text>
+          <Text style={styles.instructions}>To get started, edit App.js</Text>
+        </View>
+			</ScrollView>
 		)
 	}
 }

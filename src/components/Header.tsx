@@ -10,9 +10,9 @@ type Props = {}
 export default class HeaderComponent extends Component<Props> {
   render() {
     return (
-      <View style={[s.bg_primary]}>
-        <Text>Endis</Text>
-        <Svg height={20} width={20} viewBox="0 0 100 100">
+      <View style={[s.bg_primary, s.jcsb, s.aic, s.flx_row, s.ph125, s.pv075]}>
+        <Text style={[s.fs2, s.white]}>ENDIS</Text>
+        <Svg height={30} width={30} viewBox="0 0 100 100">
           <Circle
             cx={50}
             cy={50}
@@ -24,8 +24,8 @@ export default class HeaderComponent extends Component<Props> {
           <Rect
             x={15}
             y={15}
-            width={70}
-            height={70}
+            width={80}
+            height={80}
             stroke="red"
             strokeWidth={2}
             fill="yellow"
