@@ -1,4 +1,16 @@
-import { Palette, build, Options, Multipliers } from 'react-native-better-styles'
+import { Palette, build, Options, Multipliers } from 'react-native-better-styles';
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
+function calculateRemSize(width: number): number {
+  if (width > 400) {
+    return 16
+  } else if (width > 370) {
+    return 14
+  }
+  return 12
+}
  
 const palette: Palette = {
   primary_back: '#011153',
@@ -8,6 +20,7 @@ const palette: Palette = {
   white: '#ffffff',
   black: '#000000',
   blue: '#2c5cff',
+  turquoise: '#6EF9E7'
 }
 
 const defaultMultipliers = {
@@ -38,11 +51,13 @@ const defaultMultipliers = {
   '65':         6.5,
   '7':          7,
   '75':         7.5,
-  '8':          8
+  '8':          8,
+  '9':          9,
+  '10':          10
 } as Multipliers
 
 
 build({
-  remSize: 15,
+  remSize: calculateRemSize(width),
   palette,
 } as Options)

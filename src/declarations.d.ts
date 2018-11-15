@@ -13,8 +13,8 @@ declare module 'react-native-svg' {
     strokeLinejoin?: 'miter' | 'bevel' | 'round'
     strokeDasharray?: string[]
     strokeDashoffset?: null | number
-    x?: number
-    y?: number
+    x?: number | string
+    y?: number | string
     rotate?: number
     scale?: number
     origin?: any
@@ -40,9 +40,16 @@ declare module 'react-native-svg' {
   }
 
   export type RectProps = {
-    width?: number
-    height?: number
+    width?: number | string
+    height?: number | string
   } & SvgElementProps
+
+  export type ImageProps = {
+    preserveAspectRatio?: string
+    opacity?: number
+    href: () => any
+    clipPath?: string
+  } & RectProps
 
   export class Svg extends React.Component<SvgProps> {}
   export class Path extends React.Component<SvgElementProps & { d: string }> {}
@@ -55,7 +62,7 @@ declare module 'react-native-svg' {
   > {}
   export class Ellipse extends React.Component<SvgElementProps> {}
   export class G extends React.Component<SvgElementProps> {}
-  export class Image extends React.Component<SvgElementProps> {}
+  export class Image extends React.Component<ImageProps> {}
   export class Text extends React.Component<
     SvgElementProps & {
       fontWeight?: 'bold' | 'normal' | number

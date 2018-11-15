@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Switch } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Switch, Image } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Room } from '../models';
 import stores from '../stores';
-import { s, sizes } from 'react-native-better-styles';
+import { s, sizes, colors } from 'react-native-better-styles';
 import Carousel from 'react-native-snap-carousel';
-import ToggleSwitch from 'toggle-switch-react-native';
+import SwitchSelector from 'react-native-switch-selector';
 
 const { width, height } = Dimensions.get('window');
 
@@ -49,7 +49,7 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
   renderRoom({item, index}: {item: Room, index: number}) {
     return (
       <View>
-        <Text style={[s.fs2, s.white, s.tc]}>{item.name}</Text>
+        <Text style={[s.fs15, s.white, s.tc]}>{item.name}</Text>
       </View>
     );
   }
@@ -63,27 +63,42 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
           data={roomStore.rooms}
           renderItem={this.renderRoom}
           sliderWidth={width}
-          itemWidth={125}
-          containerCustomStyle={[s.pv1, s.bbw3, s.b_primary_light]}
+          itemWidth={sizes[8]}
+          containerCustomStyle={[s.pv05, s.bbw3, s.b_primary_light]}
           onSnapToItem={index => console.log(index)}
         />
-        <ToggleSwitch
-          isOn={atHome}
-          onColor='green'
-          offColor='red'
-          label='Example label'
-          labelStyle={{color: 'black', fontWeight: '900'}}
-          size='large'
-          onToggle={isOn => this.setState({atHome: isOn})}
-        />
-        <Switch
-          value={atHome}
-          onValueChange={atHome => this.setState({atHome})}
-        >
-          
-        </Switch>
+        <View style={[s.flx_row, s.bbw2, s.b_grey, s.aic]}>
+          <View style={[s.flx_grow, {flexBasis: width/2}, s.p2]}>
+            <View style={[s.flx_i]}>
+              <SwitchSelector  
+                initial={0}
+                textColor={colors.turquoise_50} //'#7a44cf'
+                selectedColor={colors.turquoise}
+                hasPadding
+                backgroundColor={colors.primary}
+                buttonColor={colors.primary_back}
+                borderColor={colors.primary}
+                options={[
+                  { value: 'f', imageIcon: require('../assets/images/at_home_icon_half_size.png') },
+                  { value: 'm', imageIcon: require('../assets/images/nat_home_icon_half_size.png') }
+                ]}
+                onPress={value => console.log(`Call onPress with value: ${value}`)}
+              />
+            </View>
+          </View>
+          <View style={[s.flx_row, s.flx_grow, {flexBasis: width/2}, s.jcsa, s.p2]}>
+            <Image 
+              style={[s.w2, s.h2]} 
+              source={require('../assets/images/settings_icon.png')}
+            />
+            <Image 
+              style={[s.w2, s.h2]} 
+              source={require('../assets/images/settings_icon.png')}
+            />
+          </View>
+        </View>
         <View style={[s.pv1, s.aic, s.jcc]}>
-          <Text style={styles.welcome}>Welcome{roomStore.rooms.length}</Text>
+          <Text style={styles.welcome}>Welcom{roomStore.rooms.length}</Text>
           <Text style={styles.instructions}>To get started, edit App.js</Text>
         </View>
 			</ScrollView>
