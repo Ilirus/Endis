@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <layer-list>
+            <item android:drawable="@drawable/at_home_switch_button_half_size" />
+            <item android:drawable="@drawable/nat_home_icon_half_size" />
+        </layer-list>
+    </item>
+    <item android:state_checked="false">
+        <layer-list>
+            <item android:drawable="@drawable/at_home_switch_button_half_size" />
+            <item android:drawable="@drawable/at_home_icon_half_size" />
+        </layer-list>
+    </item>
+</selector>
