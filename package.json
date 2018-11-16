@@ -22,6 +22,7 @@
     "react-native-snap-carousel": "^3.7.5",
     "react-native-svg": "^8.0.8",
     "react-native-switch-selector": "^1.1.8",
+    "react-native-vector-icons": "^6.0.2",
     "react-navigation": "^2.18.2"
   },
   "devDependencies": {

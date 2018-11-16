@@ -20,7 +20,8 @@ const palette: Palette = {
   white: '#ffffff',
   black: '#000000',
   blue: '#2c5cff',
-  turquoise: '#6EF9E7'
+  turquoise: '#6EF9E7',
+  dark_blue: '#020E4A'
 }
 
 const defaultMultipliers = {
@@ -52,6 +53,7 @@ const defaultMultipliers = {
   '7':          7,
   '75':         7.5,
   '8':          8,
+  '95':         9.5,
   '9':          9,
   '10':          10
 } as Multipliers
