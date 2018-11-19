@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "name": "Зал",
+    "costs": 45,
+    "consumption": 150,
+    "customTemperature": 20,
+    "temperature": 19
+  },
+  {
+    "id": "2",
+    "name": "Кухня",
+    "costs": 30,
+    "consumption": 180,
+    "customTemperature": 23,
+    "temperature": 20
+  },
+  {
+    "id": "3",
+    "name": "Спальня",
+    "costs": 25,
+    "consumption": 130,
+    "customTemperature": 15,
+    "temperature": 20
+  },
+  {
+    "id": "4",
+    "name": "Офис",
+    "costs": 26,
+    "consumption": 135,
+    "customTemperature": 15,
+    "temperature": 20
+  }
+]
