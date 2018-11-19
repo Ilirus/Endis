@@ -6,7 +6,7 @@
  */
 
 #import "AppDelegate.h"
-
+#import "Orientation.h" // react-native-orientation
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
@@ -31,5 +31,15 @@
   [self.window makeKeyAndVisible];
   return YES;
 }
+// react-native-orientation
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window 
+{
+  while ([[UIDevice currentDevice] isGeneratingDeviceOrientationNotifications]) {
+      [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+  }
+
+  return [Orientation getOrientation];
+}
+// react-native-orientation
 
 @end

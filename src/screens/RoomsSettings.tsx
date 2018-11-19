@@ -5,9 +5,9 @@ import { Room } from '../models';
 import stores from '../stores';
 import { s, sizes, colors } from 'react-native-better-styles';
 import Carousel from 'react-native-snap-carousel';
-import SwitchSelector from 'react-native-switch-selector';
 import MultiToggleSwitch from 'react-native-multi-toggle-switch';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import Orientation from 'react-native-orientation';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,7 +19,8 @@ type State = {
   room: any
   atHome: boolean
   isDay: boolean
-  radiatorStatus: 'on' | 'off' | 'half' 
+  radiatorStatus: 'on' | 'off' | 'half'
+  orientation: Orientation.orientation
 }
 @inject('roomStore')
 @observer
@@ -27,27 +28,30 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    const newNote = (title: string, content: number) => {
-        const note = {
-          id: `$fake` + new Date() + (Math.random() * 10).toFixed(1),
-          name: title,
-          costs: content * 5,
-          consumption: content * 30,
-          customTemperature: content + 2,
-          temperature: content,
-        };
-        props.roomStore.saveNote(note);
-        this.state = {
-          room: null,
-          atHome: false,
-          isDay: true,
-          radiatorStatus: 'on'
-        }
+    this.state = {
+      room: null,
+      atHome: false,
+      isDay: true,
+      radiatorStatus: 'on',
+      orientation: 'UNKNOWN'
     }
-    
-    newNote('Кухня', 40);
-    newNote('Спальня', 30);
-    newNote('Зал', 17);
+  }
+
+  componentWillMount() {
+    this.orientationDidChange(Orientation.getInitialOrientation());
+  }
+
+  componentDidMount() {
+    Orientation.addOrientationListener(this.orientationDidChange);
+  }
+
+  componentWillUnmount() {
+    Orientation.removeOrientationListener(this.orientationDidChange);
+  }
+
+  orientationDidChange = (orientation: Orientation.orientation) => {
+    console.log(orientation)
+    this.setState({orientation})
   }
 
   renderRoom({item, index}: {item: Room, index: number}) {
@@ -75,13 +79,13 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
 
 	render() {
     const {roomStore} = this.props;
-    const {atHome, isDay, radiatorStatus} = this.state;
+    const {atHome, isDay, radiatorStatus, orientation} = this.state;
 		return (
 			<ScrollView style={[s.flx_i, s.bg_primary_back]}>
         <Carousel
           data={roomStore.rooms}
           renderItem={this.renderRoom}
-          sliderWidth={width}
+          sliderWidth={orientation === 'PORTRAIT' ? width : height}
           itemWidth={sizes[8]}
           containerCustomStyle={[s.pv05, s.bbw3, s.b_primary_light]}
           onSnapToItem={index => console.log(index)}
@@ -96,7 +100,7 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
                 itemsContainer={[s.bw1, s.b_turquoise_50, s.flx_row, s.br2, s.jcsa, {marginTop: -10}]} 
               >
                 <MultiToggleSwitch.Item 
-                  itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5, marginLeft: -0.5}]} 
+                  itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5}]} 
                   secondaryColor={''} 
                   primaryColor={colors.dark_blue}
                   onPress={() => this.setState({atHome: true})}
@@ -107,7 +111,7 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
                   />
                 </MultiToggleSwitch.Item>
                 <MultiToggleSwitch.Item 
-                  itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5, marginRigth: -0.5}]} 
+                  itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5}]} 
                   secondaryColor={''} 
                   primaryColor={colors.dark_blue}
                   onPress={() => this.setState({atHome: false})}
@@ -161,7 +165,7 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
           </View>
         </View>
         <View style={[s.pv1, s.aic, s.jcc]}>
-          <Text style={styles.welcome}>Welcome{roomStore.rooms.length}</Text>
+          <Text style={styles.welcome}>Welcome!</Text>
           <Text style={styles.instructions}>To get started, edit App.js</Text>
         </View>
 			</ScrollView>
