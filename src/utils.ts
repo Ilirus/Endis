@@ -1,5 +1,6 @@
 import * as t from 'io-ts';
 import { PathReporter } from 'io-ts/lib/PathReporter';
+import { ScaledSize } from 'react-native';
 
 export function promiseTimeout<T>(
   promise: Promise<T>,
@@ -35,4 +36,8 @@ export function decode<T>(
       return Promise.resolve(result)
     }
   )
+}
+
+export function getWidthHeight({width, height}: ScaledSize): {width: number, height: number} {
+  return height > width ? {width, height} : {width: height, height: width}
 }

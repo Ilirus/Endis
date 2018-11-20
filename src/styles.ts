@@ -55,7 +55,7 @@ const defaultMultipliers = {
   '8':          8,
   '95':         9.5,
   '9':          9,
-  '10':          10
+  '10':         10
 } as Multipliers
 
 

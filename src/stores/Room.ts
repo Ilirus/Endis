@@ -17,16 +17,6 @@ export default class RoomStore {
     this.fetchRoom();
   }
 
-  // saveRoom(room: Room) {
-  //   const idx = this.rooms.findIndex(({id}) => room.id === id);
-  //   console.log(room)
-  //   if (idx < 0) {
-  //     this.rooms.push(room);
-  //   } else {
-  //     this.rooms[idx] = room;
-  //   }
-  // }
-
   @action
   saveRoom(remoteRoom: RemoteData<Room>) {
     switch (remoteRoom.kind) {
@@ -36,6 +26,16 @@ export default class RoomStore {
     
       default:
         break;
+    }
+  }
+
+  @action
+  editRoom = (room: Room) => {
+    const idx = this.rooms.findIndex(({id}) => id === room.id);
+    if (idx < 0) {
+      throw new Error(`Room ${room.id} not found`);
+    } else {
+      this.rooms[idx] = room;
     }
   }
 

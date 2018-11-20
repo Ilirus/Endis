@@ -2,6 +2,9 @@
   {
     "id": "1",
     "name": "Зал",
+    "atHome": true,
+    "isDay": true,
+    "radiatorStatus": "on",
     "costs": 45,
     "consumption": 150,
     "customTemperature": 20,
@@ -10,6 +13,9 @@
   {
     "id": "2",
     "name": "Кухня",
+    "atHome": true,
+    "isDay": true,
+    "radiatorStatus": "off",
     "costs": 30,
     "consumption": 180,
     "customTemperature": 23,
@@ -18,6 +24,9 @@
   {
     "id": "3",
     "name": "Спальня",
+    "atHome": true,
+    "isDay": false,
+    "radiatorStatus": "on",
     "costs": 25,
     "consumption": 130,
     "customTemperature": 15,
@@ -26,6 +35,9 @@
   {
     "id": "4",
     "name": "Офис",
+    "atHome": false,
+    "isDay": true,
+    "radiatorStatus": "half",
     "costs": 26,
     "consumption": 135,
     "customTemperature": 15,

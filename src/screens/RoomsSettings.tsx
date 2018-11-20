@@ -8,32 +8,31 @@ import Carousel from 'react-native-snap-carousel';
 import MultiToggleSwitch from 'react-native-multi-toggle-switch';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Orientation from 'react-native-orientation';
+import { getWidthHeight } from '../utils';
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = getWidthHeight(Dimensions.get("screen"));
 
 type Props = {
   roomStore: typeof stores.roomStore
 }
 
 type State = {
-  room: any
-  atHome: boolean
-  isDay: boolean
-  radiatorStatus: 'on' | 'off' | 'half'
+  room: Room
   orientation: Orientation.orientation
+  show: boolean
 }
 @inject('roomStore')
 @observer
 export default class RoomsSettingsScreen extends Component<Props, State> {
 
+  show = true;
+
   constructor(props: Props) {
     super(props)
     this.state = {
-      room: null,
-      atHome: false,
-      isDay: true,
-      radiatorStatus: 'on',
-      orientation: 'UNKNOWN'
+      room: props.roomStore.rooms[0],
+      orientation: 'UNKNOWN',
+      show: true
     }
   }
 
@@ -50,7 +49,6 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
   }
 
   orientationDidChange = (orientation: Orientation.orientation) => {
-    console.log(orientation)
     this.setState({orientation})
   }
 
@@ -62,7 +60,8 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
     );
   }
 
-  changeRadiatorStatus(status: State['radiatorStatus']) {
+  changeRadiatorStatus(room: Room) {
+    let status = room.radiatorStatus;
     switch (status) {
       case 'on':
         status = 'half'
@@ -74,59 +73,76 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
         status = 'on'
         break;
     }
-    this.setState({radiatorStatus: status})
+    this.setState({room: {...room, radiatorStatus: status}})
+  }
+
+  renderSwitch() {
+    const { room, show } = this.state;
+    return show && (
+      <MultiToggleSwitch
+        defaultActiveIndex={room.atHome ? 0 : 1}
+        activeContainerStyle={[s.bw1, s.b_turquoise]} 
+        itemsContainerBackgroundStyle={[]}
+        itemsContainer={[s.bw1, s.b_turquoise_50, s.flx_row, s.br2, s.jcsa, {marginTop: -10}]} 
+      >
+        <MultiToggleSwitch.Item 
+          itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5}]} 
+          secondaryColor={''} 
+          primaryColor={colors.dark_blue}
+          onPress={() => this.setState({room: {...room, atHome: true}})}
+        >
+          <Image 
+            style={[s.w175, s.h175, !room.atHome ? s.o_50 : {}]} 
+            source={require('../assets/images/at_home_icon_half_size.png')}
+          />
+        </MultiToggleSwitch.Item>
+        <MultiToggleSwitch.Item 
+          itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5}]} 
+          secondaryColor={''} 
+          primaryColor={colors.dark_blue}
+          onPress={() => this.setState({room: {...room, atHome: false}})}
+        >
+          <Image 
+            style={[s.w175, s.h175, room.atHome ? s.o_50 : {}]} 
+            source={require('../assets/images/nat_home_icon_half_size.png')}
+          />
+        </MultiToggleSwitch.Item>
+      </MultiToggleSwitch>
+    )
   }
 
 	render() {
-    const {roomStore} = this.props;
-    const {atHome, isDay, radiatorStatus, orientation} = this.state;
-		return (
-			<ScrollView style={[s.flx_i, s.bg_primary_back]}>
+    const { roomStore: {rooms, editRoom} } = this.props;
+    const { orientation, room, show } = this.state;
+		return rooms.length && (
+      <ScrollView style={[s.flx_i, s.bg_primary_back]}>
         <Carousel
-          data={roomStore.rooms}
+          data={[...rooms]}
           renderItem={this.renderRoom}
           sliderWidth={orientation === 'PORTRAIT' ? width : height}
-          itemWidth={sizes[8]}
+          itemWidth={sizes['7']}
           containerCustomStyle={[s.pv05, s.bbw3, s.b_primary_light]}
-          onSnapToItem={index => console.log(index)}
+          onSnapToItem={index => {
+            editRoom(room); this.setState(
+              (prevState, props) => {
+                const newState = {room: rooms[index], show: true};
+                if (prevState.room.atHome !== rooms[index].atHome) {
+                  newState.show = false;
+                }
+                return newState;
+              }, () => {if (show) this.setState({show: true})})
+            }
+          }
         />
         <View style={[s.ph1]}>
           <View style={[s.flx_row, s.bbw1, s.b_grey, s.aic, s.pv1]}>
             <View style={[s.flx_grow, s.brw1, s.b_grey, s.pr15, s.jcc, {flexBasis: 1}]}>
-              <MultiToggleSwitch
-                defaultActiveIndex={atHome ? 0 : 1}
-                activeContainerStyle={[s.bw1, s.b_turquoise]} 
-                itemsContainerBackgroundStyle={[]}
-                itemsContainer={[s.bw1, s.b_turquoise_50, s.flx_row, s.br2, s.jcsa, {marginTop: -10}]} 
-              >
-                <MultiToggleSwitch.Item 
-                  itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5}]} 
-                  secondaryColor={''} 
-                  primaryColor={colors.dark_blue}
-                  onPress={() => this.setState({atHome: true})}
-                >
-                  <Image 
-                    style={[s.w175, s.h175, !atHome ? s.o_50 : {}]} 
-                    source={require('../assets/images/at_home_icon_half_size.png')}
-                  />
-                </MultiToggleSwitch.Item>
-                <MultiToggleSwitch.Item 
-                  itemContainer={[s.br2, s.pv1, s.flx_i, s.aic, {marginTop: -0.5}]} 
-                  secondaryColor={''} 
-                  primaryColor={colors.dark_blue}
-                  onPress={() => this.setState({atHome: false})}
-                >
-                  <Image 
-                    style={[s.w175, s.h175, atHome ? s.o_50 : {}]} 
-                    source={require('../assets/images/nat_home_icon_half_size.png')}
-                  />
-                </MultiToggleSwitch.Item>
-              </MultiToggleSwitch>
+              {this.renderSwitch()}
             </View>
             <View style={[s.flx_row, s.flx_grow, {flexBasis: 1}, s.jcsa, s.ph1]}>
-              <TouchableOpacity onPress={() => this.setState({isDay: !isDay})}>
+              <TouchableOpacity onPress={() => this.setState({room: {...room, isDay: !room.isDay}})}>
                 { 
-                  isDay ? (
+                  room.isDay ? (
                     <Image 
                       style={[s.w35, s.h35]} 
                       source={require('../assets/images/day_indicator_icon.png')}
@@ -139,15 +155,15 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
                   )
                 }
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.changeRadiatorStatus(radiatorStatus)}>
+              <TouchableOpacity onPress={() => this.changeRadiatorStatus(room)}>
                 {
-                  radiatorStatus === 'on' ? (
+                  room.radiatorStatus === 'on' ? (
                     <Image 
                       style={[s.w35, s.h35]} 
                       source={require('../assets/images/radiator_indicator_on.png')}
                     />
                   ) : (
-                    radiatorStatus === 'half' ? (
+                    room.radiatorStatus === 'half' ? (
                       <Image 
                         style={[s.w35, s.h35]} 
                         source={require('../assets/images/radiator_indicator.png')}
@@ -165,10 +181,10 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
           </View>
         </View>
         <View style={[s.pv1, s.aic, s.jcc]}>
-          <Text style={styles.welcome}>Welcome!</Text>
+          <Text style={styles.welcome}>Welcome</Text>
           <Text style={styles.instructions}>To get started, edit App.js</Text>
         </View>
-			</ScrollView>
+      </ScrollView>
 		)
 	}
 }
