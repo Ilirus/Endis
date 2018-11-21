@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions, ScrollView, Switch, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, ScrollView, Switch, Image, TouchableOpacity, Slider } from 'react-native';
 import { observer, inject } from 'mobx-react/native';
 import { Room } from '../models';
 import stores from '../stores';
@@ -9,6 +9,8 @@ import MultiToggleSwitch from 'react-native-multi-toggle-switch';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Orientation from 'react-native-orientation';
 import { getWidthHeight } from '../utils';
+import CircleSlider from 'react-native-circle-slider';
+import * as _ from "lodash"
 
 const { width, height } = getWidthHeight(Dimensions.get("screen"));
 
@@ -111,6 +113,20 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
     )
   }
 
+  changeTemperature = () => {
+    const { room } = this.state;
+    return _.debounce(
+      this.changeTemp,
+      50
+    )
+  }
+
+  changeTemp = (temperature: number) => {
+    const { room } = this.state;
+    console.log('hi', temperature); 
+    this.setState({room: {...room, customTemperature: temperature}})
+  }
+
 	render() {
     const { roomStore: {rooms, editRoom} } = this.props;
     const { orientation, room, show } = this.state;
@@ -134,12 +150,12 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
             }
           }
         />
-        <View style={[s.ph1]}>
-          <View style={[s.flx_row, s.bbw1, s.b_grey, s.aic, s.pv1]}>
-            <View style={[s.flx_grow, s.brw1, s.b_grey, s.pr15, s.jcc, {flexBasis: 1}]}>
+        <View style={[s.ph125]}>
+          <View style={[s.flx_row, s.bbw1, s.b_grey, s.aic, s.pv15]}>
+            <View style={[s.brw1, s.b_grey, s.pr15, s.jcc, s.flx_i]}>
               {this.renderSwitch()}
             </View>
-            <View style={[s.flx_row, s.flx_grow, {flexBasis: 1}, s.jcsa, s.ph1]}>
+            <View style={[s.flx_row, s.flx_i, s.jcsa, s.pl15]}>
               <TouchableOpacity onPress={() => this.setState({room: {...room, isDay: !room.isDay}})}>
                 { 
                   room.isDay ? (
@@ -179,10 +195,60 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-        <View style={[s.pv1, s.aic, s.jcc]}>
-          <Text style={styles.welcome}>Welcome</Text>
-          <Text style={styles.instructions}>To get started, edit App.js</Text>
+          <View style={[s.pv15, s.aic, s.jcsb, s.flx_row, s.bbw1, s.b_grey]}>
+            <View style={[s.jcc, s.aic, s.flx_row]}>
+              <Image 
+                style={[s.w15, s.h375]} 
+                source={require('../assets/images/thermometer_icon.png')}
+              />
+              <Text style={[s.fs125, s.white, s.tc, s.pl1]}>Температура</Text>
+            </View>
+            <View style={[s.flx_row, s.jcc, s.ass]}>
+              <Text style={[s.fs25, s.white, s.tc]}>{room.temperature}</Text>
+              <View>
+                <View style={[s.bw1, s.b_white, s.br1, s.w075, s.h075, s.mt075]}></View>
+              </View>
+            </View>
+          </View>
+          <View style={[s.pv15, s.ass, s.jcc, s.bbw1, s.b_grey]}>
+            <View style={[s.flx_row, s.jcsb]}>
+              <View>
+                <Text style={[s.fs125, s.white, s.tl]}>
+                  Потребление энергии
+                </Text>
+              </View>
+              <View>
+                <Text style={[s.fs15, s.white, s.tr]}>
+                  {room.consumption} KW
+                </Text>
+              </View>
+            </View>
+            <View style={[s.flx_row, s.jcsb, s.flx_grow, {flexBasis: 100}]}>
+              <View>
+                <Text style={[s.fs125, s.white, s.tc]}>
+                  Расходы средств
+                </Text>
+              </View>
+              <View>
+                <Text style={[s.fs15, s.white, s.tc]}>
+                  {room.costs} UAH
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={[s.flx_i, s.pv15, s.jcc, s.ais]}>
+            <Text style={[s.fs125, s.white, s.tc]}>Установить температуру</Text>
+            <Text style={[s.fs25, s.white, s.tc, s.pv15]}>{room.customTemperature}</Text>
+            <Slider
+              step={0.5}
+              value={room.customTemperature}
+              maximumValue={40} 
+              minimumValue={15} 
+              maximumTrackTintColor={'red'} 
+              minimumTrackTintColor={'blue'}
+              onValueChange={this.changeTemperature()}
+            ></Slider>
+          </View>
         </View>
       </ScrollView>
 		)
