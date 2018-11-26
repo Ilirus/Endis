@@ -27,7 +27,7 @@ type State = {
 @observer
 export default class RoomsSettingsScreen extends Component<Props, State> {
 
-  show = true;
+  private temp: number;
 
   constructor(props: Props) {
     super(props)
@@ -36,6 +36,7 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
       orientation: 'UNKNOWN',
       show: true
     }
+    this.temp = props.roomStore.rooms[0].customTemperature;
   }
 
   componentWillMount() {
@@ -115,16 +116,10 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
 
   changeTemperature = () => {
     const { room } = this.state;
-    return _.debounce(
-      this.changeTemp,
-      50
+    return _.throttle(
+      temperature => this.setState({room: {...room, customTemperature: temperature}}),
+      150
     )
-  }
-
-  changeTemp = (temperature: number) => {
-    const { room } = this.state;
-    console.log('hi', temperature); 
-    this.setState({room: {...room, customTemperature: temperature}})
   }
 
 	render() {
@@ -139,14 +134,21 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
           itemWidth={sizes['7']}
           containerCustomStyle={[s.pv05, s.bbw3, s.b_primary_light]}
           onSnapToItem={index => {
-            editRoom(room); this.setState(
+            editRoom(room);
+            this.setState(
               (prevState, props) => {
+                this.temp = rooms[index].customTemperature;
                 const newState = {room: rooms[index], show: true};
                 if (prevState.room.atHome !== rooms[index].atHome) {
                   newState.show = false;
                 }
                 return newState;
-              }, () => {if (show) this.setState({show: true})})
+              }, () => {
+                if (show) {
+                  this.setState({show: true})
+                }
+              }
+            )
             }
           }
         />
@@ -206,7 +208,7 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
             <View style={[s.flx_row, s.jcc, s.ass]}>
               <Text style={[s.fs25, s.white, s.tc]}>{room.temperature}</Text>
               <View>
-                <View style={[s.bw1, s.b_white, s.br1, s.w075, s.h075, s.mt075]}></View>
+                <View style={[s.bw1, s.b_white, s.br1, s.w075, s.h075, s.mt075, s.ml025]}></View>
               </View>
             </View>
           </View>
@@ -240,12 +242,13 @@ export default class RoomsSettingsScreen extends Component<Props, State> {
             <Text style={[s.fs125, s.white, s.tc]}>Установить температуру</Text>
             <Text style={[s.fs25, s.white, s.tc, s.pv15]}>{room.customTemperature}</Text>
             <Slider
-              step={0.5}
-              value={room.customTemperature}
-              maximumValue={40} 
-              minimumValue={15} 
-              maximumTrackTintColor={'red'} 
-              minimumTrackTintColor={'blue'}
+              step={1}
+              value={this.temp}
+              maximumValue={35} 
+              minimumValue={15}
+              thumbTintColor={'red'}
+              maximumTrackTintColor={'blue'} 
+              minimumTrackTintColor={'red'}
               onValueChange={this.changeTemperature()}
             ></Slider>
           </View>
